@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#07152e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Crew Schedule" />
+<title>Crew Schedule Pro</title>
+<style>
+:root{--bg:#07152e;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.09);--text:#eef4ff;--muted:#9db0d1;--blue:#6ab7ff;--yellow:#ffc24b;--shadow:0 12px 32px rgba(0,0,0,.28);--radius:18px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;background:linear-gradient(180deg,#07152e 0%,#041024 100%);color:var(--text)}body{max-width:430px;margin:0 auto;position:relative}
+.app{position:relative;z-index:1;padding:56px 16px 110px}.header{padding:6px 4px 18px}.logo{font-size:13px;letter-spacing:4px;text-transform:uppercase;color:var(--blue);font-weight:800;margin-bottom:10px}.title{font-size:38px;line-height:1.04;font-weight:900;letter-spacing:-1.8px}.sub{margin-top:8px;font-size:14px;color:var(--yellow);font-weight:700}
+.card{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(14px);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{padding:18px;margin-bottom:14px;background:linear-gradient(135deg,#2044d7 0%,#1a34a9 46%,#182d92 100%)}.hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#d7e4ff}.hero-dday{font-size:14px;font-weight:900}
+.route{display:grid;grid-template-columns:1fr 110px 1fr;gap:8px;align-items:center}.port{text-align:center}.port .code{font-size:18px;opacity:.95;margin-bottom:4px}.port .time{font-size:32px;font-weight:900;letter-spacing:-1.2px}.port .utc{font-size:12px;color:#ffdd84;margin-top:4px}.port .local{font-size:11px;color:#99f0b6;margin-top:3px}.mid{text-align:center}.mid .dur{font-size:16px;font-weight:900;margin-bottom:8px}.mid .line{height:2px;background:linear-gradient(90deg,transparent,#a8c3ff,transparent);position:relative;border-radius:99px}.mid .plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-56%);font-size:22px}.mid .flightno{margin-top:8px;font-size:12px;color:#d7e4ff}.hero-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2)}.hero-date{font-size:15px;font-weight:800}.badge{padding:10px 16px;border-radius:999px;background:rgba(128,191,255,.9);color:white;font-weight:800}
+.section-title{margin:18px 4px 12px;color:var(--blue);font-size:14px;font-weight:900;letter-spacing:.06em}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:18px 10px;text-align:center}.stat .icon{font-size:28px}.stat .val{font-size:56px;line-height:1;font-weight:900;letter-spacing:-2px;margin:8px 0 10px}.stat .lbl{font-size:14px;color:#d9e2f7;font-weight:700}
+.list{display:flex;flex-direction:column;gap:12px}.flight{display:grid;grid-template-columns:56px 1fr auto;gap:12px;padding:16px;align-items:center}.fi-ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(84,144,255,.16);font-size:30px}.flight.night .fi-ico{background:rgba(255,210,84,.12)}.fi-main{min-width:0}.fi-route{font-size:23px;font-weight:900;letter-spacing:-1px}.fi-meta{margin-top:4px;color:var(--muted);font-size:14px;line-height:1.4}.fi-duration{font-size:24px;font-weight:900;color:#8cc8ff;text-align:right}.muted-card{padding:18px;text-align:center;color:var(--muted)}
+.btn{appearance:none;border:none;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,#3177ff,#4f8fff);color:white}.btn-secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}.btn-danger{background:#7d1f30;color:white}
+.form{display:grid;gap:12px}.field{display:grid;gap:7px}label{font-size:13px;color:#b9c8e4;font-weight:800}input,select,textarea{width:100%;padding:14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);font-size:16px;outline:none}textarea{min-height:132px;resize:vertical}input::placeholder,textarea::placeholder{color:#869abf}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.panel{padding:16px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.small{font-size:12px;color:var(--muted);line-height:1.45}.helper{font-size:13px;color:#d8e5ff;background:rgba(100,150,255,.12);border:1px solid rgba(100,150,255,.22);padding:12px;border-radius:14px;line-height:1.5}
+.item-actions{display:flex;gap:8px;margin-top:10px}.mini-btn{appearance:none;border:none;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--text);font-weight:800}
+.footer-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(430px,100%);padding:10px 14px calc(14px + env(safe-area-inset-bottom));background:rgba(6,15,34,.92);backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:10}
+.nav-btn{appearance:none;border:none;background:transparent;color:#a4b3cf;padding:10px 6px;border-radius:14px;font-size:12px;font-weight:800;display:grid;gap:4px;place-items:center}.nav-btn.active{background:rgba(255,255,255,.08);color:#fff}.nav-ico{font-size:21px}.hidden{display:none!important}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:14px;z-index:50;background:rgba(12,22,45,.96);color:white;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+@media (max-width:380px){.title{font-size:34px}.port .time{font-size:28px}.fi-route{font-size:20px}.stat .val{font-size:46px}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<div class="app">
+<section id="view-home" class="view">
+<div class="header"><div class="logo">✈ CREW SCHEDULE PRO</div><div class="title">안녕하세요 👋</div><div class="sub">🕘 Asia/Seoul · UTC+09</div></div>
+<div id="nextFlightWrap"></div>
+<div class="section-title">오늘의 요약</div>
+<div class="stats">
+<div class="card stat"><div class="icon">⏱️</div><div class="val" id="statHours">0h</div><div class="lbl">총 비행시간</div></div>
+<div class="card stat"><div class="icon">✈️</div><div class="val" id="statFlights">0</div><div class="lbl">총 편수</div></div>
+<div class="card stat"><div class="icon">🌙</div><div class="val" id="statLayovers">0</div><div class="lbl">레이오버</div></div>
+</div>
+<div class="section-title">예정 스케줄</div>
+<div id="scheduleList" class="list"></div>
+</section>
+
+<section id="view-add" class="view hidden">
+<div class="header"><div class="logo">ADD / EDIT FLIGHT</div><div class="title" style="font-size:30px">일정 입력</div><div class="sub">직접 추가하고 수정할 수 있어요</div></div>
+<div class="card panel"><form id="flightForm" class="form">
+<input type="hidden" id="editId">
+<div class="grid-2">
+<div class="field"><label>출발 날짜</label><input type="date" id="date" required></div>
+<div class="field"><label>편명</label><input type="text" id="flightNo" placeholder="예: KE001" required></div>
+</div>
+<div class="grid-2">
+<div class="field"><label>출발 공항</label><input type="text" id="from" placeholder="예: ICN" required></div>
+<div class="field"><label>도착 공항</label><input type="text" id="to" placeholder="예: JFK" required></div>
+</div>
+<div class="grid-2">
+<div class="field"><label>출발 시각</label><input type="time" id="depart" required></div>
+<div class="field"><label>도착 시각</label><input type="time" id="arrive" required></div>
+</div>
+<div class="grid-3">
+<div class="field"><label>출발 UTC</label><input type="text" id="depUtc" placeholder="+09:00" value="+09:00"></div>
+<div class="field"><label>도착 UTC</label><input type="text" id="arrUtc" placeholder="-04:00" value="+09:00"></div>
+<div class="field"><label>유형</label><select id="type"><option value="flight">비행</option><option value="layover">레이오버</option></select></div>
+</div>
+<div class="field"><label>메모</label><textarea id="notes" placeholder="예: 호텔 체크인, briefing 시간, deadhead 등"></textarea></div>
+<div class="actions">
+<button type="submit" class="btn btn-primary" id="saveBtn">일정 저장</button>
+<button type="button" class="btn btn-secondary" id="resetBtn">입력 초기화</button>
+<button type="button" class="btn btn-danger hidden" id="deleteBtn">현재 일정 삭제</button>
+</div>
+<div class="small">UTC를 다르게 넣으면 비행시간이 자동 계산됩니다. 같은 시간대면 둘 다 +09:00처럼 동일하게 넣으세요.</div>
+</form></div></section>
+
+<section id="view-import" class="view hidden">
+<div class="header"><div class="logo">IMPORT</div><div class="title" style="font-size:30px">붙여넣기 입력</div><div class="sub">회사 스케줄 문자/메모를 붙여넣으면 최대한 자동으로 읽어옵니다</div></div>
+<div class="card panel">
+<div class="helper"><b>예시 형식</b><br><b>2026-03-26 KE001 ICN JFK 10:30 11:45 +09:00 -04:00</b><br><b>2026/03/27 KE002 JFK ICN 18:00 22:20 -04:00 +09:00</b><br>한 줄에 하나씩 넣으면 됩니다.</div>
+<div class="form" style="margin-top:12px">
+<div class="field"><label>스케줄 붙여넣기</label><textarea id="pasteBox" placeholder="여기에 여러 줄로 붙여넣으세요"></textarea></div>
+<div class="actions">
+<button class="btn btn-primary" id="parseBtn" type="button">붙여넣기 해석해서 추가</button>
+<button class="btn btn-secondary" id="sampleBtn" type="button">샘플 일정 넣기</button>
+<button class="btn btn-secondary" id="clearAllBtn" type="button">전체 삭제</button>
+</div>
+<div class="small">지원 형식: 날짜 / 편명 / 출발공항 / 도착공항 / 출발시각 / 도착시각 / 출발UTC / 도착UTC</div>
+</div></div></section>
+
+<section id="view-share" class="view hidden">
+<div class="header"><div class="logo">SHARE</div><div class="title" style="font-size:30px">공유 / 설치</div><div class="sub">혼자 쓰기 + 동료와 공유하기</div></div>
+<div class="card panel"><div class="form">
+<div class="helper"><b>아이폰 홈 화면에 추가</b><br>Safari 공유 버튼 → “홈 화면에 추가”를 누르면 앱처럼 쓸 수 있어요.</div>
+<div class="field"><label>현재 데이터 내보내기</label><textarea id="exportBox" readonly></textarea></div>
+<div class="actions">
+<button class="btn btn-primary" id="copyExportBtn" type="button">JSON 복사</button>
+<button class="btn btn-secondary" id="downloadBackupBtn" type="button">백업 파일 다운로드</button>
+<button class="btn btn-secondary" id="loadBackupBtn" type="button">백업 JSON 불러오기</button>
+</div>
+<div class="field"><label>백업 JSON 붙여넣기</label><textarea id="importJsonBox" placeholder="동료에게 받은 JSON을 붙여넣고 불러오기"></textarea></div>
+</div></div></section>
+</div>
+
+<nav class="footer-nav">
+<button class="nav-btn active" data-view="home"><div class="nav-ico">🏠</div><div>홈</div></button>
+<button class="nav-btn" data-view="add"><div class="nav-ico">➕</div><div>입력</div></button>
+<button class="nav-btn" data-view="import"><div class="nav-ico">📋</div><div>붙여넣기</div></button>
+<button class="nav-btn" data-view="share"><div class="nav-ico">📤</div><div>공유</div></button>
+</nav>
+
+<script>
+const STORAGE_KEY='crew_schedule_pro_v1';const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+const state={flights:loadFlights(),currentView:'home'};
+function showToast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast._timer);showToast._timer=setTimeout(()=>t.classList.remove('show'),1800)}
+function loadFlights(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return[];const data=JSON.parse(raw);return Array.isArray(data)?data:[]}catch(e){return[]}}
+function saveFlights(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state.flights));updateExportBox()}
+function setView(view){state.currentView=view;['home','add','import','share'].forEach(v=>{$('#view-'+v).classList.toggle('hidden',v!==view)});$$('.nav-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));if(view==='share')updateExportBox();window.scrollTo({top:0,behavior:'smooth'})}
+function parseUtcOffset(str){if(!str)return 0;const m=String(str).trim().match(/^([+-])(\d{1,2}):?(\d{2})$/);if(!m)return 0;const sign=m[1]==='-'?-1:1;return sign*(parseInt(m[2],10)*60+parseInt(m[3],10))}
+function minutesBetween(date,depart,arrive,depUtc,arrUtc){const [y,m,d]=date.split('-').map(Number);const [dh,dm]=depart.split(':').map(Number);const [ah,am]=arrive.split(':').map(Number);const depLocal=Date.UTC(y,m-1,d,dh,dm);let arrLocal=Date.UTC(y,m-1,d,ah,am);const depOffset=parseUtcOffset(depUtc),arrOffset=parseUtcOffset(arrUtc);const depUtcMs=depLocal-depOffset*60000;let best=null;for(let dayAdd=0;dayAdd<=2;dayAdd++){const candidateLocal=arrLocal+dayAdd*86400000;const arrUtcMs=candidateLocal-arrOffset*60000;const diff=Math.round((arrUtcMs-depUtcMs)/60000);if(diff>0&&(best===null||diff<best))best=diff}return best??0}
+function compactDuration(mins){const h=Math.floor(mins/60),m=mins%60;if(h===0)return `${m}m`;if(m===0)return `${h}h`;return `${h}h ${m}m`}
+function dateLabel(date){const dt=new Date(date+'T00:00:00');const w=['일','월','화','수','목','금','토'][dt.getDay()];return `${dt.getMonth()+1}월 ${dt.getDate()}일 (${w})`}
+function sortFlights(){state.flights.sort((a,b)=>`${a.date} ${a.depart}`.localeCompare(`${b.date} ${b.depart}`))}
+function computeStats(){const flights=state.flights.filter(f=>f.type==='flight');return{total:flights.reduce((s,f)=>s+(f.durationMin||0),0),flights:flights.length,layovers:state.flights.filter(f=>f.type==='layover').length}}
+function getNextFlight(){const now=new Date();const flights=state.flights.filter(f=>f.type==='flight');return flights.find(f=>new Date(`${f.date}T${f.depart}:00`)>=now)||flights[0]||null}
+function flagFor(code){const map={ICN:'🇰🇷',GMP:'🇰🇷',JFK:'🇺🇸',LAX:'🇺🇸',SFO:'🇺🇸',NRT:'🇯🇵',HND:'🇯🇵',CDG:'🇫🇷',LHR:'🇬🇧',FRA:'🇩🇪',DXB:'🇦🇪',BKK:'🇹🇭'};return map[String(code).toUpperCase()]||'🛫'}
+function escapeHtml(str=''){return String(str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))}
+function calcDday(date){const now=new Date();const target=new Date(date+'T00:00:00');const diff=Math.ceil((target-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000);if(diff===0)return'D-day';if(diff>0)return`D-${diff}`;return`D+${Math.abs(diff)}`}
+function badgeLabel(date){const diff=calcDday(date);return diff==='D-day'?'당일':diff}
+function render(){sortFlights();saveFlights();const stats=computeStats();$('#statHours').textContent=compactDuration(stats.total);$('#statFlights').textContent=stats.flights;$('#statLayovers').textContent=stats.layovers;const next=getNextFlight();const nextWrap=$('#nextFlightWrap');
+if(next){nextWrap.innerHTML=`<div class="card hero"><div class="hero-top"><div class="hero-dday">⏳ ${calcDday(next.date)}</div><div>${next.type==='layover'?'레이오버':'다음 비행'}</div></div><div class="route"><div class="port"><div class="code">${flagFor(next.from)} ${escapeHtml(next.from)}</div><div class="time">${escapeHtml(next.depart)}</div><div class="utc">UTC ${escapeHtml(next.depUtc)}</div><div class="local">현지 ${escapeHtml(next.depart)}</div></div><div class="mid"><div class="dur">${compactDuration(next.durationMin||0)}</div><div class="line"><div class="plane">${next.type==='layover'?'🌙':'✈️'}</div></div><div class="flightno">${escapeHtml(next.flightNo)}</div></div><div class="port"><div class="code">${flagFor(next.to)} ${escapeHtml(next.to)}</div><div class="time">${escapeHtml(next.arrive)}</div><div class="utc">UTC ${escapeHtml(next.arrUtc)}</div><div class="local">현지 ${escapeHtml(next.arrive)}</div></div></div><div class="hero-bottom"><div class="hero-date">📅 ${dateLabel(next.date)}</div><div class="badge">${badgeLabel(next.date)}</div></div></div>`}
+else{nextWrap.innerHTML=`<div class="card muted-card">아직 일정이 없습니다. 아래 <b>입력</b> 또는 <b>붙여넣기</b>에서 추가해 주세요.</div>`}
+const list=$('#scheduleList');if(state.flights.length===0){list.innerHTML=`<div class="card muted-card">저장된 일정이 없습니다.</div>`}else{list.innerHTML=state.flights.map(f=>`<div class="card flight ${f.type==='layover'?'night':''}"><div class="fi-ico">${f.type==='layover'?'🌙':'✈️'}</div><div class="fi-main"><div class="fi-route">${flagFor(f.from)} ${escapeHtml(f.from)} → ${flagFor(f.to)} ${escapeHtml(f.to)}</div><div class="fi-meta">${dateLabel(f.date)} · ${escapeHtml(f.flightNo)} · ${escapeHtml(f.depart)}–${escapeHtml(f.arrive)}${f.notes?`<br>${escapeHtml(f.notes)}`:''}</div><div class="item-actions"><button class="mini-btn" onclick="editFlight('${f.id}')">수정</button><button class="mini-btn" onclick="duplicateFlight('${f.id}')">복제</button><button class="mini-btn" onclick="removeFlight('${f.id}')">삭제</button></div></div><div class="fi-duration">${compactDuration(f.durationMin||0)}</div></div>`).join('')}updateExportBox()}
+function resetForm(){$('#editId').value='';$('#flightForm').reset();$('#depUtc').value='+09:00';$('#arrUtc').value='+09:00';$('#type').value='flight';$('#deleteBtn').classList.add('hidden');$('#saveBtn').textContent='일정 저장';$('#date').value=new Date().toISOString().slice(0,10)}
+function upsertFlight(p){p.durationMin=minutesBetween(p.date,p.depart,p.arrive,p.depUtc,p.arrUtc);const idx=state.flights.findIndex(f=>f.id===p.id);if(idx>=0)state.flights[idx]=p;else state.flights.push(p);render()}
+$('#flightForm').addEventListener('submit',e=>{e.preventDefault();upsertFlight({id:$('#editId').value||String(Date.now()),date:$('#date').value,flightNo:$('#flightNo').value.trim().toUpperCase(),from:$('#from').value.trim().toUpperCase(),to:$('#to').value.trim().toUpperCase(),depart:$('#depart').value,arrive:$('#arrive').value,depUtc:($('#depUtc').value||'+09:00').trim(),arrUtc:($('#arrUtc').value||'+09:00').trim(),type:$('#type').value,notes:$('#notes').value.trim()});resetForm();setView('home');showToast('일정이 저장됐어요')});
+$('#resetBtn').addEventListener('click',()=>{resetForm();showToast('입력을 초기화했어요')});
+$('#deleteBtn').addEventListener('click',()=>{const id=$('#editId').value;if(!id)return;removeFlight(id);resetForm();setView('home')});
+window.editFlight=id=>{const f=state.flights.find(x=>x.id===id);if(!f)return;$('#editId').value=f.id;$('#date').value=f.date;$('#flightNo').value=f.flightNo;$('#from').value=f.from;$('#to').value=f.to;$('#depart').value=f.depart;$('#arrive').value=f.arrive;$('#depUtc').value=f.depUtc;$('#arrUtc').value=f.arrUtc;$('#type').value=f.type;$('#notes').value=f.notes||'';$('#deleteBtn').classList.remove('hidden');$('#saveBtn').textContent='일정 수정';setView('add')};
+window.removeFlight=id=>{if(!confirm('이 일정을 삭제할까요?'))return;state.flights=state.flights.filter(f=>f.id!==id);render();showToast('삭제했어요')};
+window.duplicateFlight=id=>{const f=state.flights.find(x=>x.id===id);if(!f)return;state.flights.push({...f,id:String(Date.now()+Math.random())});render();showToast('복제했어요')};
+function normalizeUtc(v){const m=String(v).match(/^([+-])(\d{2}):?(\d{2})$/);return m?`${m[1]}${m[2]}:${m[3]}`:'+09:00'}
+function padTime(t){const [h,m]=t.split(':');return `${String(h).padStart(2,'0')}:${m}`}
+function parseLine(line){let txt=line.trim();if(!txt)return null;txt=txt.replace(/\s+/g,' ');const dateMatch=txt.match(/(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);const timeMatches=txt.match(/\b\d{1,2}:\d{2}\b/g);const utcMatches=txt.match(/[+-]\d{2}:?\d{2}/g)||[];const airportMatches=txt.match(/\b[A-Z]{3}\b/g)||[];const flightMatch=txt.match(/\b[A-Z]{2}\d{2,4}\b/);if(!dateMatch||!timeMatches||timeMatches.length<2||airportMatches.length<2)return null;const normDate=dateMatch[1].replace(/[\/.]/g,'-').split('-').map((v,i)=>i===0?v:String(v).padStart(2,'0')).join('-');return{id:String(Date.now()+Math.random()),date:normDate,flightNo:flightMatch?flightMatch[0]:'FLIGHT',from:airportMatches[0],to:airportMatches[1],depart:padTime(timeMatches[0]),arrive:padTime(timeMatches[1]),depUtc:utcMatches[0]?normalizeUtc(utcMatches[0]):'+09:00',arrUtc:utcMatches[1]?normalizeUtc(utcMatches[1]):(utcMatches[0]?normalizeUtc(utcMatches[0]):'+09:00'),type:'flight',notes:''}}
+$('#parseBtn').addEventListener('click',()=>{const text=$('#pasteBox').value.trim();if(!text)return showToast('붙여넣을 내용을 넣어주세요');const parsed=text.split('\n').map(parseLine).filter(Boolean);if(parsed.length===0)return showToast('읽을 수 있는 형식을 찾지 못했어요');parsed.forEach(upsertFlight);$('#pasteBox').value='';setView('home');showToast(`${parsed.length}개 일정 추가 완료`)});
+$('#sampleBtn').addEventListener('click',()=>{[{id:String(Date.now()+1),date:'2026-03-26',flightNo:'KE001',from:'ICN',to:'JFK',depart:'10:30',arrive:'11:45',depUtc:'+09:00',arrUtc:'-04:00',type:'flight',notes:''},{id:String(Date.now()+2),date:'2026-03-27',flightNo:'KE002',from:'JFK',to:'ICN',depart:'18:00',arrive:'22:20',depUtc:'-04:00',arrUtc:'+09:00',type:'flight',notes:''},{id:String(Date.now()+3),date:'2026-03-26',flightNo:'LAYOVER',from:'JFK',to:'JFK',depart:'12:00',arrive:'23:00',depUtc:'-04:00',arrUtc:'-04:00',type:'layover',notes:'호텔 체크인'}].forEach(upsertFlight);setView('home');showToast('샘플 일정을 넣었어요')});
+$('#clearAllBtn').addEventListener('click',()=>{if(!confirm('전체 일정을 삭제할까요?'))return;state.flights=[];render();showToast('전체 삭제 완료')});
+function updateExportBox(){$('#exportBox').value=JSON.stringify(state.flights,null,2)}
+$('#copyExportBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#exportBox').value);showToast('JSON을 복사했어요')}catch(e){showToast('복사에 실패했어요')}})
+$('#downloadBackupBtn').addEventListener('click',()=>{const blob=new Blob([$('#exportBox').value],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='crew-schedule-backup.json';a.click();URL.revokeObjectURL(a.href)})
+$('#loadBackupBtn').addEventListener('click',()=>{try{const txt=$('#importJsonBox').value.trim();if(!txt)return showToast('JSON을 붙여넣어 주세요');const arr=JSON.parse(txt);if(!Array.isArray(arr))throw new Error();state.flights=arr;render();setView('home');showToast('백업을 불러왔어요')}catch(e){showToast('JSON 형식이 올바르지 않아요')}})
+$$('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view)));
+resetForm();render();
+</script>
+</body></html>
