@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08162f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Crew Schedule">
+<title>Crew Schedule Roster PDF v4</title>
+<style>
+:root{--bg:#08162f;--bg2:#041024;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);--text:#eef4ff;--muted:#97a8c7;--blue:#77b8ff;--yellow:#ffd166;--green:#84e3a5;--danger:#ff7f8f;--shadow:0 14px 38px rgba(0,0,0,.28);--radius:18px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
+body{max-width:430px;margin:0 auto}
+.app{padding:56px 16px 110px}
+.header{padding:8px 4px 18px}.logo{font-size:12px;letter-spacing:4px;color:var(--blue);font-weight:900;margin-bottom:8px}.title{font-size:34px;font-weight:900;letter-spacing:-1.4px;line-height:1.08}.sub{margin-top:6px;color:var(--yellow);font-weight:800}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);backdrop-filter:blur(12px);box-shadow:var(--shadow)}
+.hero{padding:18px;background:linear-gradient(135deg,#2147da 0%,#1c37ab 52%,#182d91 100%);margin-bottom:14px}
+.hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#dce8ff}.route{display:grid;grid-template-columns:1fr 110px 1fr;gap:8px;align-items:center}
+.port{text-align:center}.code{font-size:19px;margin-bottom:6px}.big{font-size:32px;font-weight:900;letter-spacing:-1.2px}.small-utc{font-size:12px;color:#ffd978;margin-top:4px}.small-local{font-size:11px;color:#9ff0b8;margin-top:4px}
+.mid{text-align:center}.mid .dur{font-size:16px;font-weight:900;margin-bottom:8px}.mid .line{height:2px;background:linear-gradient(90deg,transparent,#a7c5ff,transparent);position:relative}.mid .plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-54%);font-size:21px}.mid .fn{font-size:12px;color:#dbe5ff;margin-top:7px}
+.hero-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18)}.badge{padding:9px 14px;border-radius:999px;background:rgba(121,180,255,.92);font-weight:900}
+.section-title{margin:18px 4px 12px;font-size:14px;font-weight:900;color:var(--blue);letter-spacing:.06em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:16px 10px;text-align:center}.stat .icon{font-size:25px}.stat .val{font-size:48px;font-weight:900;line-height:1;margin:8px 0}.stat .lbl{font-size:14px;color:#dae2f3;font-weight:800}
+.list{display:flex;flex-direction:column;gap:12px}.item{display:grid;grid-template-columns:56px 1fr auto;gap:12px;padding:16px;align-items:center}
+.ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:rgba(83,145,255,.14)}
+.item.off .ico{background:rgba(255,255,255,.08)} .item.layover .ico{background:rgba(255,209,102,.14)} .item.ground .ico{background:rgba(142,199,255,.14)}
+.route-line{font-size:21px;font-weight:900;letter-spacing:-1px}.meta{font-size:14px;color:var(--muted);line-height:1.45;margin-top:5px}.dur-right{font-size:22px;font-weight:900;color:#93cbff;text-align:right}
+.panel{padding:16px}.form{display:grid;gap:12px}.field{display:grid;gap:7px}
+label{font-size:13px;color:#bdcceb;font-weight:800}
+input,select,textarea{width:100%;padding:14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);font-size:16px;outline:none}
+textarea{min-height:132px;resize:vertical}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{appearance:none;border:none;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:900}.btn-primary{background:linear-gradient(135deg,#3177ff,#4e93ff);color:#fff}.btn-secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}.btn-danger{background:#822437;color:#fff}
+.helper{padding:12px;border-radius:14px;background:rgba(116,166,255,.12);border:1px solid rgba(116,166,255,.2);font-size:13px;line-height:1.5;color:#dbe7ff}.small{font-size:12px;color:var(--muted);line-height:1.45}
+.item-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.mini-btn{appearance:none;border:none;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--text);font-weight:800}
+.footer-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(430px,100%);padding:10px 14px calc(14px + env(safe-area-inset-bottom));background:rgba(7,18,41,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:10}
+.nav-btn{appearance:none;border:none;background:transparent;color:#a4b5d3;padding:10px 6px;border-radius:14px;font-size:12px;font-weight:900;display:grid;place-items:center;gap:4px}.nav-btn.active{background:rgba(255,255,255,.08);color:#fff}
+.hidden{display:none!important}.toast{position:fixed;left:50%;transform:translateX(-50%);top:14px;z-index:50;background:rgba(10,20,43,.96);padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+hr{border:none;height:1px;background:rgba(255,255,255,.08);margin:10px 0}
+@media (max-width:380px){.title{font-size:31px}.big{font-size:28px}.route-line{font-size:19px}.stat .val{font-size:42px}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<div class="app">
+  <section id="view-home">
+    <div class="header">
+      <div class="logo">✈ CREW SCHEDULE</div>
+      <div class="title">안녕하세요 👋</div>
+      <div class="sub">Roster Report PDF 형식 전용</div>
+    </div>
+    <div id="nextWrap"></div>
+    <div class="section-title">요약</div>
+    <div class="stats">
+      <div class="card stat"><div class="icon">⏱️</div><div class="val" id="statHours">0h</div><div class="lbl">총 비행시간</div></div>
+      <div class="card stat"><div class="icon">✈️</div><div class="val" id="statFlights">0</div><div class="lbl">비행수</div></div>
+      <div class="card stat"><div class="icon">🌙</div><div class="val" id="statLayover">0</div><div class="lbl">레이오버</div></div>
+    </div>
+    <div class="section-title">전체 스케줄</div>
+    <div id="scheduleList" class="list"></div>
+  </section>
+
+  <section id="view-manual" class="hidden">
+    <div class="header">
+      <div class="logo">EDIT</div>
+      <div class="title" style="font-size:30px">추가 / 수정</div>
+      <div class="sub">불러온 뒤에 중간 수정 가능</div>
+    </div>
+    <div class="card panel">
+      <form id="editForm" class="form">
+        <input type="hidden" id="editId">
+        <div class="grid-2">
+          <div class="field"><label>날짜</label><input type="date" id="date" required></div>
+          <div class="field"><label>종류</label><select id="kind"><option value="flight">비행</option><option value="layover">레이오버</option><option value="off">휴무</option><option value="ground">지상업무</option></select></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>코드</label><input id="codeInput" placeholder="예: KE677 / DO / RESERVE"></div>
+          <div class="field"><label>메모</label><input id="noteInput" placeholder="예: PDF import"></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>출발 공항</label><input id="fromInput" placeholder="예: ICN"></div>
+          <div class="field"><label>도착 공항</label><input id="toInput" placeholder="예: HKT"></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>출발 현지시각</label><input type="time" id="depInput"></div>
+          <div class="field"><label>도착 현지시각</label><input type="time" id="arrInput"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">저장</button>
+          <button class="btn btn-secondary" type="button" id="resetBtn">초기화</button>
+          <button class="btn btn-danger hidden" type="button" id="deleteBtn">삭제</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="view-pdf" class="hidden">
+    <div class="header">
+      <div class="logo">PDF IMPORT</div>
+      <div class="title" style="font-size:30px">Roster Report PDF 불러오기</div>
+      <div class="sub">네가 올린 새 PDF 형식에 맞춤</div>
+    </div>
+    <div class="card panel">
+      <div class="helper">
+        이 버전은 다음 줄 형식을 인식합니다.<br>
+        <b>02-Apr-2026 KE677/020426/B787 16:15 KE677 FO FLY ICN 17:50 HKT 22:10 ...</b><br>
+        <b>03-Apr-2026 22:05 KE678 FO FLY HKT 23:25 ICN 07:35 (+1) ...</b><br>
+        <b>DO / ATDO / RESERVE / COMRGS1 / 78RECGS1 / 78RECPC1 / 78RECPT1</b>
+      </div>
+      <hr>
+      <div class="form">
+        <div class="field"><label>PDF 파일 선택</label><input id="pdfInput" type="file" accept="application/pdf"></div>
+        <div class="field"><label>추출된 텍스트</label><textarea id="pdfText" placeholder="PDF를 넣으면 여기에 텍스트가 보입니다"></textarea></div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="parseBtn">PDF 일정으로 변환</button>
+          <button class="btn btn-secondary" type="button" id="sampleBtn">샘플 넣기</button>
+          <button class="btn btn-danger" type="button" id="clearBtn">전체 삭제</button>
+        </div>
+        <div class="small">도착 시간이 <b>(+1)</b> 이면 다음날 도착으로 처리합니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-share" class="hidden">
+    <div class="header">
+      <div class="logo">SHARE</div>
+      <div class="title" style="font-size:30px">공유 / 백업</div>
+      <div class="sub">JSON 백업 가능</div>
+    </div>
+    <div class="card panel">
+      <div class="helper">Safari 공유 버튼 → <b>홈 화면에 추가</b> 하면 앱처럼 쓸 수 있어요.</div>
+      <div class="form" style="margin-top:12px">
+        <div class="field"><label>내보내기 JSON</label><textarea id="exportBox" readonly></textarea></div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="copyBtn">JSON 복사</button>
+          <button class="btn btn-secondary" type="button" id="downloadBtn">백업 다운로드</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="footer-nav">
+  <button class="nav-btn active" data-view="home"><div>🏠</div><div>홈</div></button>
+  <button class="nav-btn" data-view="manual"><div>➕</div><div>수정</div></button>
+  <button class="nav-btn" data-view="pdf"><div>📄</div><div>PDF</div></button>
+  <button class="nav-btn" data-view="share"><div>📤</div><div>공유</div></button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
+<script>
+const STORAGE_KEY='crew_schedule_roster_v4';
+const AIRPORTS={
+  ICN:{tz:'Asia/Seoul',flag:'🇰🇷'},GMP:{tz:'Asia/Seoul',flag:'🇰🇷'},HKT:{tz:'Asia/Bangkok',flag:'🇹🇭'},
+  JFK:{tz:'America/New_York',flag:'🇺🇸'},YVR:{tz:'America/Vancouver',flag:'🇨🇦'},MAD:{tz:'Europe/Madrid',flag:'🇪🇸'}
+};
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const state={items:loadState(),view:'home'};
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.classList.remove('show'),1800)}
+function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return[]}}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state.items));$('#exportBox').value=JSON.stringify(state.items,null,2)}
+function setView(v){state.view=v;['home','manual','pdf','share'].forEach(name=>$('#view-'+name).classList.toggle('hidden',name!==v));$$('.nav-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===v));if(v==='share')saveState();window.scrollTo({top:0,behavior:'smooth'})}
+$$('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view)));
+
+function tzOf(code){return (AIRPORTS[(code||'').toUpperCase()]||{}).tz || 'UTC'}
+function flagOf(code){return (AIRPORTS[(code||'').toUpperCase()]||{}).flag || '🛫'}
+
+function localDateTimeToUTC(dateStr,timeStr,airport){
+  if(!dateStr||!timeStr) return null;
+  const tz=tzOf(airport), [y,m,d]=dateStr.split('-').map(Number), [hh,mm]=timeStr.split(':').map(Number);
+  let utcMillis=Date.UTC(y,m-1,d,hh,mm);
+  for(let i=0;i<4;i++){
+    const dt=new Date(utcMillis);
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(dt);
+    const got={year:+parts.find(p=>p.type==='year').value,month:+parts.find(p=>p.type==='month').value,day:+parts.find(p=>p.type==='day').value,hour:+parts.find(p=>p.type==='hour').value,minute:+parts.find(p=>p.type==='minute').value};
+    const desired=Date.UTC(y,m-1,d,hh,mm), observed=Date.UTC(got.year,got.month-1,got.day,got.hour,got.minute);
+    const diff=desired-observed; utcMillis+=diff; if(Math.abs(diff)<60000) break;
+  }
+  return utcMillis;
+}
+function utcToLocalParts(utcMillis, airport){
+  const parts=new Intl.DateTimeFormat('ko-KR',{timeZone:tzOf(airport),month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(utcMillis));
+  const find=t=>parts.find(p=>p.type===t)?.value||'';
+  return {month:find('month'),day:find('day'),weekday:find('weekday').replace('요일',''),hour:find('hour'),minute:find('minute')};
+}
+function utcLabel(utcMillis){if(utcMillis==null)return'';const d=new Date(utcMillis);return `UTC ${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}`}
+function durationMin(it){if(it.depUTC==null||it.arrUTC==null)return 0;return Math.max(0,Math.round((it.arrUTC-it.depUTC)/60000))}
+function durationText(mins){const h=Math.floor(mins/60),m=mins%60;if(h===0)return `${m}m`;if(m===0)return `${h}h`;return `${h}h ${String(m).padStart(2,'0')}m`}
+function escapeHtml(str=''){return String(str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))}
+function sortItems(){state.items.sort((a,b)=>(a.depUTC??0)-(b.depUTC??0)||String(a.date).localeCompare(String(b.date)))}
+function stats(){return{total:state.items.filter(i=>i.kind==='flight').reduce((s,i)=>s+durationMin(i),0),flights:state.items.filter(i=>i.kind==='flight').length,layovers:state.items.filter(i=>i.kind==='layover').length}}
+function nextFlight(){const now=Date.now();return state.items.filter(i=>i.kind==='flight').sort((a,b)=>a.depUTC-b.depUTC).find(i=>i.depUTC>=now)||state.items.filter(i=>i.kind==='flight').sort((a,b)=>a.depUTC-b.depUTC)[0]||null}
+function dayDiffLabel(dateStr){const t=new Date(dateStr+'T00:00:00'),n=new Date(),base=new Date(n.getFullYear(),n.getMonth(),n.getDate());const diff=Math.ceil((t-base)/86400000);if(diff===0)return'당일';if(diff>0)return`D-${diff}`;return`D+${Math.abs(diff)}`}
+function prettyDate(it){const d=new Date((it.date||new Date().toISOString().slice(0,10))+'T00:00:00');const w=['일','월','화','수','목','금','토'][d.getDay()];return `${d.getMonth()+1}월 ${d.getDate()}일 (${w})`}
+
+function render(){
+  sortItems(); saveState();
+  const s=stats(); $('#statHours').textContent=durationText(s.total); $('#statFlights').textContent=s.flights; $('#statLayover').textContent=s.layovers;
+  const n=nextFlight(), wrap=$('#nextWrap');
+  if(!n){wrap.innerHTML=`<div class="card panel">PDF 탭에서 Roster Report PDF를 넣어 주세요.</div>`}
+  else{
+    const dep=utcToLocalParts(n.depUTC,n.from), arr=utcToLocalParts(n.arrUTC,n.to);
+    wrap.innerHTML=`<div class="card hero"><div class="hero-top"><div><b>${dayDiffLabel(n.date)}</b></div><div>다음 비행</div></div><div class="route"><div class="port"><div class="code">${flagOf(n.from)} ${escapeHtml(n.from)}</div><div class="big">${dep.hour}:${dep.minute}</div><div class="small-local">${tzOf(n.from)}</div><div class="small-utc">${utcLabel(n.depUTC)}</div></div><div class="mid"><div class="dur">${durationText(durationMin(n))}</div><div class="line"><div class="plane">✈️</div></div><div class="fn">${escapeHtml(n.code)}</div></div><div class="port"><div class="code">${flagOf(n.to)} ${escapeHtml(n.to)}</div><div class="big">${arr.hour}:${arr.minute}</div><div class="small-local">${tzOf(n.to)}</div><div class="small-utc">${utcLabel(n.arrUTC)}</div></div></div><div class="hero-bottom"><div>${prettyDate(n)}</div><div class="badge">${dayDiffLabel(n.date)}</div></div></div>`
+  }
+  const list=$('#scheduleList');
+  if(state.items.length===0){list.innerHTML=`<div class="card panel">저장된 일정이 없습니다.</div>`;return}
+  list.innerHTML=state.items.map(it=>{
+    let icon='✈️', cls='', title='', meta='', right='';
+    if(it.kind==='flight'){
+      const dep=utcToLocalParts(it.depUTC,it.from), arr=utcToLocalParts(it.arrUTC,it.to);
+      title=`${flagOf(it.from)} ${escapeHtml(it.from)} → ${flagOf(it.to)} ${escapeHtml(it.to)}`;
+      meta=`${prettyDate(it)} · ${escapeHtml(it.code)}<br>현지 ${dep.hour}:${dep.minute} → ${arr.hour}:${arr.minute}<br>${utcLabel(it.depUTC)} → ${utcLabel(it.arrUTC)}`;
+      right=durationText(durationMin(it));
+    }else if(it.kind==='layover'){
+      icon='🌙'; cls='layover'; title=`${flagOf(it.location)} ${escapeHtml(it.location)} 레이오버`; meta=`${prettyDate(it)} · LO`; right='';
+    }else if(it.kind==='off'){
+      icon='🏖️'; cls='off'; title=escapeHtml(it.code); meta=`${prettyDate(it)} · 휴무`; right='';
+    }else{
+      icon='🧑‍🏫'; cls='ground'; title=`${escapeHtml(it.code)} ${flagOf(it.from)} ${escapeHtml(it.from)} → ${flagOf(it.to)} ${escapeHtml(it.to)}`;
+      if(it.depUTC!=null&&it.arrUTC!=null){const dep=utcToLocalParts(it.depUTC,it.from), arr=utcToLocalParts(it.arrUTC,it.to); meta=`${prettyDate(it)}<br>현지 ${dep.hour}:${dep.minute} → ${arr.hour}:${arr.minute}<br>${utcLabel(it.depUTC)} → ${utcLabel(it.arrUTC)}`; right=durationText(durationMin(it));}
+      else{meta=prettyDate(it)}
+    }
+    return `<div class="card item ${cls}"><div class="ico">${icon}</div><div><div class="route-line">${title}</div><div class="meta">${meta}${it.note?`<br>${escapeHtml(it.note)}`:''}</div><div class="item-actions"><button class="mini-btn" onclick="editItem('${it.id}')">수정</button><button class="mini-btn" onclick="duplicateItem('${it.id}')">복제</button><button class="mini-btn" onclick="removeItem('${it.id}')">삭제</button></div></div><div class="dur-right">${right}</div></div>`
+  }).join('')
+}
+
+function resetForm(){$('#editId').value='';$('#date').value=new Date().toISOString().slice(0,10);$('#kind').value='flight';$('#codeInput').value='';$('#noteInput').value='';$('#fromInput').value='';$('#toInput').value='';$('#depInput').value='';$('#arrInput').value='';$('#deleteBtn').classList.add('hidden')}
+$('#editForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const id=$('#editId').value||String(Date.now());
+  const kind=$('#kind').value, date=$('#date').value;
+  const obj={id,kind,date,code:$('#codeInput').value.trim().toUpperCase(),note:$('#noteInput').value.trim()};
+  if(kind==='flight'||kind==='ground'){obj.from=$('#fromInput').value.trim().toUpperCase();obj.to=$('#toInput').value.trim().toUpperCase();obj.depUTC=localDateTimeToUTC(date,$('#depInput').value,obj.from);obj.arrUTC=localDateTimeToUTC(date,$('#arrInput').value,obj.to);if(obj.arrUTC!=null&&obj.depUTC!=null&&obj.arrUTC<=obj.depUTC)obj.arrUTC+=86400000}
+  if(kind==='layover'){obj.location=$('#fromInput').value.trim().toUpperCase()||$('#toInput').value.trim().toUpperCase()}
+  const idx=state.items.findIndex(x=>x.id===id); if(idx>=0)state.items[idx]=obj; else state.items.push(obj);
+  render(); resetForm(); setView('home'); toast('저장했어요');
+});
+$('#resetBtn').addEventListener('click',()=>{resetForm();toast('초기화했어요')});
+$('#deleteBtn').addEventListener('click',()=>{const id=$('#editId').value;if(!id)return;state.items=state.items.filter(x=>x.id!==id);render();resetForm();setView('home');toast('삭제했어요')});
+window.editItem=function(id){const it=state.items.find(x=>x.id===id);if(!it)return;resetForm();$('#editId').value=it.id;$('#date').value=it.date;$('#kind').value=it.kind;$('#codeInput').value=it.code||'';$('#noteInput').value=it.note||'';if(it.kind==='flight'||it.kind==='ground'){const dep=utcToLocalParts(it.depUTC,it.from),arr=utcToLocalParts(it.arrUTC,it.to);$('#fromInput').value=it.from;$('#toInput').value=it.to;$('#depInput').value=`${dep.hour}:${dep.minute}`;$('#arrInput').value=`${arr.hour}:${arr.minute}`}else if(it.kind==='layover'){$('#fromInput').value=it.location||''}$('#deleteBtn').classList.remove('hidden');setView('manual')}
+window.removeItem=function(id){if(!confirm('삭제할까요?'))return;state.items=state.items.filter(x=>x.id!==id);render();toast('삭제했어요')}
+window.duplicateItem=function(id){const it=state.items.find(x=>x.id===id);if(!it)return;state.items.push({...it,id:String(Date.now()+Math.random())});render();toast('복제했어요')}
+
+function normalizePdfText(txt){return txt.replace(/\u00A0/g,' ').replace(/[ \t]+/g,' ').replace(/\n+/g,'\n').trim()}
+function monthNum(mon){return {JAN:'01',FEB:'02',MAR:'03',APR:'04',MAY:'05',JUN:'06',JUL:'07',AUG:'08',SEP:'09',OCT:'10',NOV:'11',DEC:'12'}[mon.toUpperCase()]}
+function parseRosterText(text){
+  const lines=normalizePdfText(text).split('\n').map(v=>v.trim()).filter(Boolean);
+  const out=[];
+  for(const line of lines){
+    if(/Roster Report|Date Pairing\/Activity Report Item|FLYING HRS|TVL HRS|DUTY HRS|Comments/i.test(line)) continue;
+
+    const main=line.match(/^(\d{2})-([A-Za-z]{3})-(\d{4})\s+(.+)$/);
+    if(!main) continue;
+    const date=`${main[3]}-${monthNum(main[2])}-${main[1]}`;
+    const rest=main[4];
+
+    if(/^(DO|ATDO|RESERVE)\b/i.test(rest)){
+      const code=rest.match(/^(DO|ATDO|RESERVE)\b/i)[1].toUpperCase();
+      out.push({id:String(Date.now()+Math.random()),kind:'off',date,code,note:'PDF import'});
+      continue;
+    }
+
+    let m=rest.match(/^(KE\d+[A-Z]?\/\d+\/B\d+)\s+\d{2}:\d{2}\s+(KE\d+)\s+FO\s+FLY\s+([A-Z]{3})\s+(\d{2}:\d{2})\s+([A-Z]{3})\s+(\d{2}:\d{2})(\s+\(\+1\))?/i);
+    if(m){
+      const code=m[2].toUpperCase(), from=m[3].toUpperCase(), dep=m[4], to=m[5].toUpperCase(), arr=m[6];
+      let depUTC=localDateTimeToUTC(date,dep,from), arrUTC=localDateTimeToUTC(date,arr,to);
+      if(m[7] || arrUTC<=depUTC) arrUTC+=86400000;
+      out.push({id:String(Date.now()+Math.random()),kind:'flight',date,code,from,to,depUTC,arrUTC,note:'PDF import'});
+      continue;
+    }
+
+    m=rest.match(/^(\d{2}:\d{2})\s+(KE\d+)\s+FO\s+FLY\s+([A-Z]{3})\s+(\d{2}:\d{2})\s+([A-Z]{3})\s+(\d{2}:\d{2})(\s+\(\+1\))?/i);
+    if(m){
+      const code=m[2].toUpperCase(), from=m[3].toUpperCase(), dep=m[4], to=m[5].toUpperCase(), arr=m[6];
+      let depUTC=localDateTimeToUTC(date,dep,from), arrUTC=localDateTimeToUTC(date,arr,to);
+      if(m[7] || arrUTC<=depUTC) arrUTC+=86400000;
+      out.push({id:String(Date.now()+Math.random()),kind:'flight',date,code,from,to,depUTC,arrUTC,note:'PDF import'});
+      continue;
+    }
+
+    m=rest.match(/^([A-Z0-9]{4,12})\s+(\d{2}:\d{2})\s+(\d{2}:\d{2})\s+([A-Z]{3})\s+(\d{2}:\d{2})\s+([A-Z]{3})\s+(\d{2}:\d{2})(\s+\(\+1\))?/i);
+    if(m){
+      const code=m[1].toUpperCase(), from=m[4].toUpperCase(), dep=m[5], to=m[6].toUpperCase(), arr=m[7];
+      let depUTC=localDateTimeToUTC(date,dep,from), arrUTC=localDateTimeToUTC(date,arr,to);
+      if(m[8] || arrUTC<=depUTC) arrUTC+=86400000;
+      out.push({id:String(Date.now()+Math.random()),kind:'ground',date,code,from,to,depUTC,arrUTC,note:'PDF import'});
+      continue;
+    }
+  }
+
+  const withLayovers=[];
+  for(let i=0;i<out.length;i++){
+    const cur=out[i]; withLayovers.push(cur);
+    const next=out[i+1];
+    if(cur.kind==='flight' && next && next.kind==='flight' && cur.to===next.from && cur.to!==cur.from){
+      const sameDay = next.date===cur.date;
+      const dayGap = Math.round((new Date(next.date)-new Date(cur.date))/86400000);
+      if(sameDay || dayGap===1 || dayGap===2){
+        const layDate=cur.date;
+        withLayovers.push({id:String(Date.now()+Math.random()),kind:'layover',date:layDate,location:cur.to,code:'LO',note:'자동 생성'});
+      }
+    }
+  }
+  return withLayovers;
+}
+
+async function extractPdfText(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let text='';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page=await pdf.getPage(i);
+    const content=await page.getTextContent();
+    text += content.items.map(it=>it.str).join(' ') + '\n';
+  }
+  return text;
+}
+$('#pdfInput').addEventListener('change', async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  try{ $('#pdfText').value=await extractPdfText(file); toast('PDF 텍스트를 읽었어요'); }
+  catch(err){ console.error(err); toast('PDF 읽기에 실패했어요'); }
+});
+$('#parseBtn').addEventListener('click',()=>{
+  const text=$('#pdfText').value.trim(); if(!text){ toast('먼저 PDF를 넣어 주세요'); return; }
+  const items=parseRosterText(text); if(items.length===0){ toast('이번 PDF에서 일정을 못 찾았어요'); return; }
+  state.items=items; render(); setView('home'); toast(`${items.length}개 일정 변환 완료`);
+});
+$('#sampleBtn').addEventListener('click',()=>{
+  const sample=`Roster Report 01-Apr-2026to30-Apr-2026
+02-Apr-2026 KE677/020426/B787 16:15 KE677 FO FLY ICN 17:50 HKT 22:10 22:40
+03-Apr-2026 22:05 KE678 FO FLY HKT 23:25 ICN 07:35 (+1) 08:05 (+1)
+05-Apr-2026 DO 00:00 00:00 ICN 00:00 ICN 23:59 23:59
+13-Apr-2026 COMRGS1 08:30 08:30 GMP 08:30 GMP 10:30 10:30
+26-Apr-2026 KE913A/260426/B787 08:20 KE913 FO FLY ICN 09:55 MAD 18:00 18:30
+28-Apr-2026 18:40 KE914 FO FLY MAD 20:00 ICN 16:00 (+1) 16:30 (+1)`;
+  state.items=parseRosterText(sample); render(); setView('home'); toast('샘플을 넣었어요');
+});
+$('#clearBtn').addEventListener('click',()=>{ if(!confirm('전체 삭제할까요?')) return; state.items=[]; render(); toast('전체 삭제 완료'); });
+
+$('#copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#exportBox').value);toast('JSON 복사 완료')}catch(e){toast('복사 실패')}})
+$('#downloadBtn').addEventListener('click',()=>{const blob=new Blob([$('#exportBox').value],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='crew-schedule-backup.json';a.click();URL.revokeObjectURL(a.href)})
+
+$('#exportBox').value=JSON.stringify(state.items,null,2);
+resetForm(); render();
+</script>
+</body>
+</html>
