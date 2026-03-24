@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Crew Schedule">
+<meta name="theme-color" content="#060d1f">
+<title>Crew Schedule</title>
+<style>
+:root{--bg:#060d1f;--card:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.10);--blue:#7cc4ff;--yellow:#ffcc4d;--green:#89e08d;--text:#eef3ff;--muted:#aab6cf}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:radial-gradient(circle at 50% 10%, #0c2a66 0%, #05102c 35%, #030a1b 100%);color:var(--text);max-width:430px;min-height:100vh;margin-inline:auto}
+.wrap{padding:56px 16px 96px}
+.label{font-size:12px;letter-spacing:4px;color:var(--blue);font-weight:700;margin-bottom:10px}.title{font-size:34px;font-weight:800;line-height:1.15;margin:0 0 6px}.sub{font-size:14px;color:var(--yellow);font-weight:700}
+.hero{margin-top:18px;background:linear-gradient(135deg,#2450df 0%,#0d2e9a 45%,#132c79 100%);border:1px solid rgba(124,196,255,.25);border-radius:24px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.badge{font-size:14px;font-weight:700;opacity:.95;margin-bottom:12px}.route{display:flex;align-items:center;justify-content:space-between;gap:8px}.port{text-align:center;width:100px}.port .code{font-size:15px;opacity:.95;margin-bottom:6px}.port .time{font-size:32px;font-weight:900;line-height:1}.port .utc{font-size:12px;color:var(--yellow);margin-top:6px}.port .local{font-size:12px;color:var(--green);margin-top:2px}.mid{flex:1;text-align:center}.mid .dur{font-size:18px;font-weight:800;color:#bfe3ff;margin-bottom:8px}.line{height:2px;background:linear-gradient(90deg,transparent,#c7e6ff,transparent);position:relative}.plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);font-size:18px}.fn{margin-top:8px;font-size:14px;color:#d8e8ff}.datebar{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-between;font-size:16px;font-weight:700}.pill{background:#4c95ff;padding:6px 10px;border-radius:999px;font-size:13px}
+.sec{margin-top:24px;color:var(--blue);font-size:14px;font-weight:800;letter-spacing:1px}.stats{display:flex;gap:12px;margin-top:12px}.box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 10px;text-align:center}.icon{font-size:30px}.num{font-size:48px;font-weight:900;line-height:1.1;margin-top:10px}.txt{margin-top:6px;font-size:14px;color:var(--muted);font-weight:700}
+.list{margin-top:14px;display:flex;flex-direction:column;gap:12px}.item{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:18px;padding:16px}.left{display:flex;gap:12px;align-items:center}.bubble{width:44px;height:44px;border-radius:14px;background:rgba(124,196,255,.18);display:grid;place-items:center;font-size:22px}.main{font-size:18px;font-weight:800}.meta{font-size:14px;color:var(--muted);margin-top:4px}.right{font-size:24px;font-weight:900;color:#8dd0ff}
+.note{margin-top:16px;font-size:13px;color:#93a3c8;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="label">✈ CREW SCHEDULE</div>
+  <h1 class="title">안녕하세요 👋</h1>
+  <div class="sub">🕘 Asia/Seoul · UTC+09</div>
+
+  <div class="hero">
+    <div class="badge">⏳ D-2</div>
+    <div class="route">
+      <div class="port">
+        <div class="code">🇰🇷 ICN</div>
+        <div class="time">10:30</div>
+        <div class="utc">UTC 01:30</div>
+        <div class="local">현지 10:30</div>
+      </div>
+      <div class="mid">
+        <div class="dur">1h 15m</div>
+        <div class="line"><span class="plane">✈️</span></div>
+        <div class="fn">KE001</div>
+      </div>
+      <div class="port">
+        <div class="code">🇺🇸 JFK</div>
+        <div class="time">11:45</div>
+        <div class="utc">UTC 02:45</div>
+        <div class="local">현지 22:45</div>
+      </div>
+    </div>
+    <div class="datebar"><span>📅 3월 26일 (목)</span><span class="pill">당일</span></div>
+  </div>
+
+  <div class="stats">
+    <div class="box"><div class="icon">⏱️</div><div class="num">5h</div><div class="txt">총 비행시간</div></div>
+    <div class="box"><div class="icon">✈️</div><div class="num">2</div><div class="txt">총 편수</div></div>
+    <div class="box"><div class="icon">🌙</div><div class="num">1</div><div class="txt">레이오버</div></div>
+  </div>
+
+  <div class="sec">예정 스케줄</div>
+  <div class="list">
+    <div class="item">
+      <div class="left"><div class="bubble">✈️</div><div><div class="main">🇰🇷 ICN → 🇺🇸 JFK</div><div class="meta">3월 26일 (목) · KE001 · 10:30–11:45</div></div></div>
+      <div class="right">1h 15m</div>
+    </div>
+    <div class="item">
+      <div class="left"><div class="bubble">🌙</div><div><div class="main">🇺🇸 JFK → 🇰🇷 ICN</div><div class="meta">3월 27일 (금) · KE002 · 18:00–22:20</div></div></div>
+      <div class="right">4h 20m</div>
+    </div>
+  </div>
+
+  <div class="note">지금 보이던 0편/0시간 화면은 파일이 고장난 게 아니라, 이전 파일 코드가 중간에서 잘려서 일정 데이터가 비어 있었기 때문입니다. 이 버전은 바로 보이도록 샘플 일정이 들어 있습니다.</div>
+</div>
+</body>
+</html>
