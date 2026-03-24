@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#081226">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Crew Schedule">
+<title>Crew Schedule</title>
+<style>
+:root{--bg:#081226;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.08);--text:#eef2ff;--muted:#9aa7bd;--blue:#73b7ff;--blue2:#3d8dff;--green:#6ee7b7;--yellow:#fbbf24;--red:#f87171;--purple:#c4b5fd}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:linear-gradient(180deg,#081226,#06101f 60%,#07101f);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
+body{max-width:430px;margin:0 auto;min-height:100vh}
+button,input{font:inherit}
+.view{display:none;padding:56px 16px 96px}
+.view.active{display:block}
+.top{padding:54px 20px 16px}
+.label{font-size:11px;letter-spacing:3px;color:var(--blue);text-transform:uppercase}
+.title{font-size:24px;font-weight:800;margin-top:10px}
+.sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px}
+.hero{margin:0 16px 16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);background:linear-gradient(135deg,#112448,#0a1630)}
+.dday{font-size:11px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.route{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.port{text-align:center;min-width:88px}
+.port .code{font-size:26px;font-weight:900}
+.port .time{font-size:22px;font-weight:800;margin-top:2px}
+.port .meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.mid{flex:1;text-align:center}
+.line{height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);position:relative;margin:10px 0}
+.line span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:13px}
+.small{font-size:11px;color:var(--blue)}
+.stats{display:flex;gap:10px;padding:0 16px;margin-bottom:18px}
+.stat{flex:1;padding:14px 8px;text-align:center}
+.stat .v{font-size:15px;font-weight:800}
+.stat .l{font-size:10px;color:var(--muted);margin-top:4px}
+.sec{padding:0 16px}
+.sec-title{font-size:11px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.item{padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 40px}
+.ico.flight{background:rgba(115,183,255,.12)}
+.ico.off{background:rgba(110,231,183,.12)}
+.ico.reserve{background:rgba(251,191,36,.12)}
+.ico.train{background:rgba(196,181,253,.14)}
+.item .body{flex:1;min-width:0}
+.r1{font-size:14px;font-weight:700}
+.r2{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;word-break:break-word}
+.right{text-align:right}
+.right .v{font-size:12px;color:var(--blue);font-weight:700}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:10px;margin-top:4px}
+.badge.yellow{background:rgba(251,191,36,.12);color:var(--yellow)}
+.badge.blue{background:rgba(115,183,255,.12);color:var(--blue)}
+.badge.green{background:rgba(110,231,183,.12);color:var(--green)}
+.badge.purple{background:rgba(196,181,253,.14);color:var(--purple)}
+.empty{padding:40px 10px;color:var(--muted);text-align:center}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;background:rgba(7,14,28,.96);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 0 calc(12px + env(safe-area-inset-bottom))}
+.nav button{background:none;border:0;color:#7f8aa0;display:flex;flex-direction:column;gap:3px;align-items:center;padding:4px 16px}
+.nav button.active{color:var(--blue)}
+.nav .t{font-size:10px}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.08);border:0;color:var(--text)}
+.h1{font-size:20px;font-weight:800}
+.info{padding:12px 14px;border-radius:14px;background:rgba(115,183,255,.08);border:1px solid rgba(115,183,255,.16);color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:14px}
+.upload-box{padding:16px}
+.upload-btn,.btn{width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;font-weight:800}
+.subbtn{margin-top:10px;width:100%;padding:13px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);font-weight:700}
+.info-card{padding:14px;margin-bottom:8px}
+.info-card .k{font-size:11px;color:var(--muted);margin-bottom:4px}
+.info-card .v{font-size:15px;font-weight:700;line-height:1.45}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.big{padding:16px}
+.big .k{font-size:11px;color:var(--muted);margin-bottom:6px}
+.big .v{font-size:22px;font-weight:900;color:var(--blue)}
+.del{margin-top:10px;width:100%;padding:13px;border-radius:14px;border:1px solid rgba(248,113,113,.2);background:rgba(248,113,113,.08);color:var(--red);font-weight:700}
+.small-note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:8px}
+.loader{display:none;margin-top:10px;font-size:12px;color:var(--blue)}
+.status{display:none;margin-top:10px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.5}
+.status.ok{display:block;background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.25);color:var(--green)}
+.status.err{display:block;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#ffd3d3}
+.status.info{display:block;background:rgba(115,183,255,.08);border:1px solid rgba(115,183,255,.16);color:var(--blue)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{padding:5px 9px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="home" class="view active">
+  <div class="top">
+    <div class="label">✈ CREW SCHEDULE</div>
+    <div class="title">안녕하세요 👋</div>
+    <div class="sub" id="todayText"></div>
+    <div class="sub" id="tzText"></div>
+  </div>
+  <div id="nextWrap"></div>
+  <div class="stats" id="statsRow"></div>
+  <div class="sec">
+    <div class="sec-title">전체 스케줄</div>
+    <div id="upcomingList"></div>
+  </div>
+</div>
+
+<div id="import" class="view">
+  <div class="header">
+    <button class="back" onclick="go('home')">←</button>
+    <div class="h1">PDF 자동 불러오기</div>
+  </div>
+  <div class="info">Roster PDF를 올리면 비행, DO, ATDO, RESERVE, 교육/리커런트까지 자동으로 추가돼요.</div>
+  <div class="card upload-box">
+    <input id="pdfFile" type="file" accept="application/pdf" style="display:none">
+    <button class="upload-btn" onclick="document.getElementById('pdfFile').click()">PDF 선택하기</button>
+    <div id="fileName" class="small-note">선택된 파일 없음</div>
+    <div id="loader" class="loader">PDF 읽는 중...</div>
+    <div id="status" class="status"></div>
+    <div class="tagrow">
+      <div class="tag">비행 자동 추출</div>
+      <div class="tag">DO / RESERVE 포함</div>
+      <div class="tag">로컬 저장</div>
+      <div class="tag">캘린더 내보내기</div>
+    </div>
+    <button class="subbtn" onclick="replaceFromPdf()">기존 일정 지우고 PDF로 교체</button>
+    <button class="subbtn" onclick="mergeFromPdf()">기존 일정에 PDF 추가</button>
+    <button class="subbtn" onclick="exportICS()">📅 캘린더로 전체 일정 내보내기</button>
+  </div>
+  <div class="small-note">비행은 날짜 밀림 방지를 위해 출발일 기준 종일 이벤트로 내보내요. 설명에 출발/도착 시간이 같이 들어가요.</div>
+</div>
+
+<div id="detail" class="view">
+  <div class="header">
+    <button class="back" onclick="go('home')">←</button>
+    <div class="h1" id="detailTitle">상세</div>
+  </div>
+  <div id="detailBody"></div>
+</div>
+
+<div id="stats" class="view">
+  <div class="header" style="margin-bottom:16px">
+    <div class="h1">📊 월간 통계</div>
+  </div>
+  <div class="grid" id="bigStats"></div>
+  <div class="sec-title">전체 항목</div>
+  <div id="allList"></div>
+</div>
+
+<div class="nav">
+  <button id="nav-home" class="active" onclick="go('home')"><div>🏠</div><div class="t">홈</div></button>
+  <button id="nav-import" onclick="go('import')"><div>📄</div><div class="t">불러오기</div></button>
+  <button id="nav-stats" onclick="go('stats')"><div>📊</div><div class="t">통계</div></button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const AIRPORTS = {
+  ICN:{flag:"🇰🇷", tz:"Asia/Seoul"}, GMP:{flag:"🇰🇷", tz:"Asia/Seoul"}, PUS:{flag:"🇰🇷", tz:"Asia/Seoul"},
+  NRT:{flag:"🇯🇵", tz:"Asia/Tokyo"}, HND:{flag:"🇯🇵", tz:"Asia/Tokyo"}, KIX:{flag:"🇯🇵", tz:"Asia/Tokyo"},
+  FUK:{flag:"🇯🇵", tz:"Asia/Tokyo"}, CTS:{flag:"🇯🇵", tz:"Asia/Tokyo"}, NGO:{flag:"🇯🇵", tz:"Asia/Tokyo"},
+  JFK:{flag:"🇺🇸", tz:"America/New_York"}, EWR:{flag:"🇺🇸", tz:"America/New_York"}, BOS:{flag:"🇺🇸", tz:"America/New_York"},
+  LAX:{flag:"🇺🇸", tz:"America/Los_Angeles"}, SFO:{flag:"🇺🇸", tz:"America/Los_Angeles"}, SEA:{flag:"🇺🇸", tz:"America/Los_Angeles"},
+  YVR:{flag:"🇨🇦", tz:"America/Vancouver"}, ORD:{flag:"🇺🇸", tz:"America/Chicago"}, DFW:{flag:"🇺🇸", tz:"America/Chicago"},
+  CDG:{flag:"🇫🇷", tz:"Europe/Paris"}, FRA:{flag:"🇩🇪", tz:"Europe/Berlin"}, LHR:{flag:"🇬🇧", tz:"Europe/London"},
+  MAD:{flag:"🇪🇸", tz:"Europe/Madrid"}, BCN:{flag:"🇪🇸", tz:"Europe/Madrid"}, FCO:{flag:"🇮🇹", tz:"Europe/Rome"},
+  SIN:{flag:"🇸🇬", tz:"Asia/Singapore"}, BKK:{flag:"🇹🇭", tz:"Asia/Bangkok"}, HKG:{flag:"🇭🇰", tz:"Asia/Hong_Kong"},
+  SYD:{flag:"🇦🇺", tz:"Australia/Sydney"}, DXB:{flag:"🇦🇪", tz:"Asia/Dubai"}, HKT:{flag:"🇹🇭", tz:"Asia/Bangkok"}
+};
+const $ = id => document.getElementById(id);
+const state = { flights: loadFlights() };
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+$('pdfFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  $('fileName').textContent = f ? f.name : '선택된 파일 없음';
+  setStatus('', '');
+});
+
+function loadFlights(){ try { return JSON.parse(localStorage.getItem('crew_schedule_auto_v3') || '[]'); } catch(e){ return []; } }
+function saveFlights(){ localStorage.setItem('crew_schedule_auto_v3', JSON.stringify(state.flights)); }
+function setStatus(type, msg){
+  const el = $('status');
+  el.className = 'status' + (type ? ' ' + type : '');
+  el.textContent = msg || '';
+  el.style.display = msg ? 'block' : 'none';
+}
+function setLoading(v){ $('loader').style.display = v ? 'block' : 'none'; }
+function pad(n){ return String(n).padStart(2,'0'); }
+function todayLocalISO(){ const d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function fmtToday(){ return new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}); }
+function tzLabel(){
+  try{
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const off = -new Date().getTimezoneOffset();
+    const sign = off >= 0 ? '+' : '-';
+    const h = Math.floor(Math.abs(off)/60);
+    const m = Math.abs(off)%60;
+    return '현재 기기 시간대 · ' + tz + ' · UTC' + sign + pad(h) + (m ? ':' + pad(m) : '');
+  }catch(e){ return '현재 기기 시간대'; }
+}
+function flag(code){ return AIRPORTS[code] ? AIRPORTS[code].flag : '🌐'; }
+function basisOffsetMinutes(){ return 540; }
+function duration(depTime, arrTime, plus){
+  const a = depTime.split(':').map(Number), b = arrTime.split(':').map(Number);
+  let dep = a[0]*60+a[1], arr = b[0]*60+b[1] + (plus||0)*1440;
+  if(arr < dep) arr += 1440;
+  const total = arr-dep;
+  return { total, h:Math.floor(total/60), m:total%60, plus:(plus||0) };
+}
+function makeUTCDate(dateStr, timeStr, plus){
+  const p = dateStr.split('-').map(Number), t = timeStr.split(':').map(Number);
+  const ms = Date.UTC(p[0], p[1]-1, p[2] + (plus||0), t[0], t[1]) - basisOffsetMinutes()*60000;
+  return new Date(ms);
+}
+function utcHM(dateObj){ return pad(dateObj.getUTCHours()) + ':' + pad(dateObj.getUTCMinutes()); }
+function localAtAirport(dateObj, code){
+  const ap = AIRPORTS[code];
+  if(!ap) return null;
+  try{
+    return {
+      time: dateObj.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:ap.tz}),
+      date: dateObj.toLocaleDateString('ko-KR',{month:'short',day:'numeric',timeZone:ap.tz}),
+      tz: ap.tz.split('/').pop().replace(/_/g,' ')
+    };
+  }catch(e){ return null; }
+}
+function shortDate(d){ return new Date(d+'T00:00:00').toLocaleDateString('ko-KR',{month:'short',day:'numeric',weekday:'short'}); }
+function statBox(v,l){ return '<div class="card stat"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>'; }
+function bigBox(k,v){ return '<div class="card big"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>'; }
+
+function normalizeDate(s){
+  const map = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+  const m = s.match(/^(\d{2})-([A-Za-z]{3})-(\d{4})$/);
+  if(!m) return null;
+  const mon = m[2].slice(0,1).toUpperCase() + m[2].slice(1,3).toLowerCase();
+  return m[3] + '-' + map[mon] + '-' + m[1];
+}
+function lineType(code, line){
+  if (/^KE\d+/i.test(code) || /\bKE\d+/i.test(line)) return 'flight';
+  if (/DO|ATDO/.test(code)) return 'off';
+  if (/RESERVE/.test(code)) return 'reserve';
+  return 'train';
+}
+function lineIcon(type){ return type==='flight'?'✈️':type==='off'?'🏖️':type==='reserve'?'⏳':'📘'; }
+function lineClass(type){ return type==='flight'?'flight':type==='off'?'off':type==='reserve'?'reserve':'train'; }
+function badgeHtml(item){
+  if(item.type==='flight') return '<div class="badge blue">비행</div>';
+  if(item.type==='off') return '<div class="badge green">' + item.code + '</div>';
+  if(item.type==='reserve') return '<div class="badge yellow">RESERVE</div>';
+  return '<div class="badge purple">' + item.code + '</div>';
+}
+function computedItem(f){
+  if(f.type !== 'flight') return { raw:f };
+  const plus = f.arrPlus || 0;
+  const dur = duration(f.depTime, f.arrTime, plus);
+  const depUtc = makeUTCDate(f.date, f.depTime, 0);
+  const arrUtc = makeUTCDate(f.date, f.arrTime, plus);
+  return { raw:f, dur, depUtc, arrUtc, depUTC: utcHM(depUtc), arrUTC: utcHM(arrUtc), depLocal: localAtAirport(depUtc, f.dep), arrLocal: localAtAirport(arrUtc, f.arr) };
+}
+function parseActivityLine(line){
+  const dateMatch = line.match(/^(\d{2}-[A-Za-z]{3}-\d{4})\s+(.+)$/);
+  if(!dateMatch) return null;
+  const date = normalizeDate(dateMatch[1]);
+  let rest = dateMatch[2].replace(/\s+/g,' ').trim();
+  if(!date || !rest) return null;
+
+  const flightNoMatch = rest.match(/\b(KE\d{2,4}[A-Z]?)\b/);
+  if (flightNoMatch){
+    const flightNo = flightNoMatch[1];
+    const after = rest.slice(rest.indexOf(flightNo));
+    const route = after.match(/\b(?:KE\d{2,4}[A-Z]?)\b.*?\b([A-Z]{3})\s+(\d{2}:\d{2})\s+([A-Z]{3})\s+(\d{2}:\d{2})(?:\s+\(\+(\d)\))?/);
+    if(route){
+      return { id:'i' + Math.random().toString(36).slice(2), type:'flight', code:flightNo, flightNo, date, dep:route[1], depTime:route[2], arr:route[3], arrTime:route[4], arrPlus:Number(route[5] || 0), raw:line };
+    }
+  }
+
+  const tokens = rest.split(' ');
+  let code = tokens.find(t => !/^\d{2}:\d{2}$/.test(t) && !/^\(\+\d\)$/.test(t)) || 'ACTIVITY';
+  const times = [...rest.matchAll(/(\d{2}:\d{2})(?:\s+\(\+(\d)\))?/g)].map(m => ({time:m[1], plus:Number(m[2]||0)}));
+  const start = times[0] ? times[0].time : '';
+  const end = times.length >= 2 ? times[times.length - 2].time : (times[0] ? times[0].time : '');
+  const endPlus = times.length >= 2 ? times[times.length - 2].plus : 0;
+  return { id:'i' + Math.random().toString(36).slice(2), type: lineType(code, line), code, title: code, date, startTime:start, endTime:end, endPlus, raw:line };
+}
+async function extractPdfLines(file){
+  if(!window.pdfjsLib) throw new Error('PDF 라이브러리를 불러오지 못했어요.');
+  const data = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data}).promise;
+  const lines = [];
+  for(let p=1; p<=pdf.numPages; p++){
+    const page = await pdf.getPage(p);
+    const content = await page.getTextContent();
+    const rows = new Map();
+    for (const item of content.items){
+      const y = Math.round(item.transform[5] * 10) / 10;
+      if(!rows.has(y)) rows.set(y, []);
+      rows.get(y).push({x:item.transform[4], str:item.str});
+    }
+    const ys = Array.from(rows.keys()).sort((a,b) => b-a);
+    for(const y of ys){
+      const text = rows.get(y).sort((a,b)=>a.x-b.x).map(v=>v.str).join(' ').replace(/\s+/g,' ').trim();
+      if(text) lines.push(text);
+    }
+  }
+  return lines;
+}
+async function parseSelectedPdf(){
+  const file = $('pdfFile').files[0];
+  if(!file){ setStatus('err','먼저 PDF를 선택해주세요.'); return null; }
+  setLoading(true);
+  setStatus('info','PDF 분석 중...');
+  try{
+    const lines = await extractPdfLines(file);
+    const items = lines.filter(line => /^\d{2}-[A-Za-z]{3}-\d{4}\b/.test(line)).map(parseActivityLine).filter(Boolean);
+    const dedup = [];
+    const seen = new Set();
+    for(const item of items){
+      const key = [item.date, item.code || '', item.flightNo || '', item.dep || '', item.depTime || '', item.startTime || '', item.raw].join('|');
+      if(!seen.has(key)){ seen.add(key); dedup.push(item); }
+    }
+    dedup.sort((a,b) => (a.date + (a.depTime || a.startTime || '00:00')).localeCompare(b.date + (b.depTime || b.startTime || '00:00')));
+    setStatus('ok', dedup.length + '개 항목을 읽었어요.');
+    return dedup;
+  } catch(err){
+    setStatus('err', '불러오기 실패: ' + (err && err.message ? err.message : String(err)));
+    return null;
+  } finally {
+    setLoading(false);
+  }
+}
+async function replaceFromPdf(){
+  const items = await parseSelectedPdf();
+  if(!items) return;
+  state.flights = items;
+  saveFlights();
+  setStatus('ok', items.length + '개 항목을 저장했어요. 홈 탭에서 확인하세요.');
+  setTimeout(() => go('home'), 700);
+}
+async function mergeFromPdf(){
+  const items = await parseSelectedPdf();
+  if(!items) return;
+  const merged = [...state.flights, ...items];
+  const out = [];
+  const seen = new Set();
+  for(const item of merged){
+    const key = [item.date, item.code || '', item.flightNo || '', item.dep || '', item.depTime || '', item.startTime || '', item.raw].join('|');
+    if(!seen.has(key)){ seen.add(key); out.push(item); }
+  }
+  out.sort((a,b) => (a.date + (a.depTime || a.startTime || '00:00')).localeCompare(b.date + (b.depTime || b.startTime || '00:00')));
+  state.flights = out;
+  saveFlights();
+  setStatus('ok', items.length + '개 항목을 추가했어요. 홈 탭에서 확인하세요.');
+  setTimeout(() => go('home'), 700);
+}
+
+function formatDateICS(dateStr){ return dateStr.replaceAll('-', ''); }
+function nextDateICS(dateStr){
+  const p = dateStr.split('-').map(Number);
+  const d = new Date(p[0], p[1]-1, p[2] + 1);
+  return d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate());
+}
+function escICS(str){
+  return String(str || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+function downloadFile(filename, text, mime){
+  const blob = new Blob([text], {type: mime || 'application/octet-stream'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function exportICS(){
+  if(!state.flights.length){
+    setStatus('err', '내보낼 일정이 없어요. 먼저 PDF를 불러와주세요.');
+    return;
+  }
+  const now = new Date();
+  const stamp = now.getUTCFullYear() + pad(now.getUTCMonth()+1) + pad(now.getUTCDate()) + 'T' + pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds()) + 'Z';
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Crew Schedule//KR//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+
+  state.flights.forEach((e, idx) => {
+    let summary = '';
+    let description = e.raw || '';
+    let dtstart = formatDateICS(e.date);
+    let dtend = nextDateICS(e.date);
+
+    if(e.type === 'flight'){
+      summary = '✈ ' + e.flightNo + ' ' + e.dep + '→' + e.arr;
+      description = [
+        '출발일 기준 일정',
+        '출발: ' + e.date + ' ' + e.depTime + ' (' + e.dep + ')',
+        '도착: ' + e.arrTime + ((e.arrPlus||0) ? ' (+' + e.arrPlus + '일)' : '') + ' (' + e.arr + ')',
+        '',
+        e.raw || ''
+      ].join('\n');
+    } else if (e.type === 'off') {
+      summary = '🏖️ ' + e.code;
+      description = e.raw || e.code;
+    } else if (e.type === 'reserve') {
+      summary = '⏳ ' + e.code;
+      description = e.raw || e.code;
+    } else {
+      summary = '📘 ' + e.code;
+      description = e.raw || e.code;
+    }
+
+    ics += 'BEGIN:VEVENT\r\n';
+    ics += 'UID:' + escICS((e.id || ('event'+idx)) + '@crew-schedule') + '\r\n';
+    ics += 'DTSTAMP:' + stamp + '\r\n';
+    ics += 'SUMMARY:' + escICS(summary) + '\r\n';
+    ics += 'DTSTART;VALUE=DATE:' + dtstart + '\r\n';
+    ics += 'DTEND;VALUE=DATE:' + dtend + '\r\n';
+    ics += 'DESCRIPTION:' + escICS(description) + '\r\n';
+    ics += 'END:VEVENT\r\n';
+  });
+
+  ics += 'END:VCALENDAR\r\n';
+  downloadFile('crew_schedule_departure_day.ics', ics, 'text/calendar;charset=utf-8');
+  setStatus('ok', '출발일 기준 캘린더 파일을 내보냈어요. 기존에 추가한 예전 일정은 캘린더에서 지운 뒤 새 파일을 추가하세요.');
+}
+
+function go(view){
+  ['home','import','detail','stats'].forEach(v => $(v).classList.remove('active'));
+  $(view).classList.add('active');
+  ['home','import','stats'].forEach(v => { const el = $('nav-'+v); if(el) el.classList.toggle('active', v === view); });
+  if(view === 'home') renderHome();
+  if(view === 'stats') renderStats();
+}
+function removeItem(id){
+  if(!confirm('이 항목을 삭제할까요?')) return;
+  state.flights = state.flights.filter(f => f.id !== id);
+  saveFlights();
+  go('home');
+}
+function showDetail(id){
+  const f = state.flights.find(x => x.id === id);
+  if(!f) return;
+  $('detailTitle').textContent = f.flightNo || f.code || '상세';
+  if(f.type === 'flight'){
+    const c = computedItem(f);
+    $('detailBody').innerHTML =
+      '<div class="card hero" style="margin:0 0 12px 0"><div class="dday">FLIGHT DETAIL</div><div class="route">' +
+      '<div class="port"><div>' + flag(f.dep) + '</div><div class="code">' + f.dep + '</div><div class="time">' + f.depTime + '</div><div class="meta">UTC ' + c.depUTC + (c.depLocal ? '<br>현지 ' + c.depLocal.time : '') + '</div></div>' +
+      '<div class="mid"><div class="small">' + c.dur.h + 'h' + (c.dur.m ? ' ' + c.dur.m + 'm' : '') + '</div><div class="line"><span>✈</span></div><div class="small">' + f.flightNo + '</div></div>' +
+      '<div class="port"><div>' + flag(f.arr) + '</div><div class="code">' + f.arr + '</div><div class="time">' + f.arrTime + (f.arrPlus ? ' <span style="font-size:11px;color:var(--green)">+' + f.arrPlus + '일</span>' : '') + '</div><div class="meta">UTC ' + c.arrUTC + (c.arrLocal ? '<br>현지 ' + c.arrLocal.time : '') + '</div></div>' +
+      '</div></div>' +
+      infoCard('날짜', new Date(f.date+'T00:00:00').toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})) +
+      infoCard('편명', f.flightNo) + infoCard('노선', f.dep + ' → ' + f.arr) + infoCard('원본 라인', f.raw) +
+      '<button class="del" onclick="removeItem(\'' + f.id + '\')">삭제</button>';
+  } else {
+    $('detailBody').innerHTML = infoCard('날짜', new Date(f.date+'T00:00:00').toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})) + infoCard('구분', f.code) + infoCard('시간', (f.startTime || '--:--') + ' ~ ' + (f.endTime || '--:--')) + infoCard('원본 라인', f.raw) + '<button class="del" onclick="removeItem(\'' + f.id + '\')">삭제</button>';
+  }
+  go('detail');
+}
+function infoCard(k,v){ return '<div class="card info-card"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>'; }
+function renderHome(){
+  $('todayText').textContent = fmtToday();
+  $('tzText').textContent = tzLabel();
+  const list = state.flights.slice().sort((a,b) => (a.date + (a.depTime || a.startTime || '00:00')).localeCompare(b.date + (b.depTime || b.startTime || '00:00')));
+  const today = todayLocalISO();
+  const upcoming = list.filter(f => f.date >= today);
+  const nextFlight = upcoming.find(f => f.type === 'flight');
+  if(nextFlight){
+    const c = computedItem(nextFlight);
+    const diffDays = Math.round((new Date(nextFlight.date+'T00:00:00') - new Date(today+'T00:00:00'))/86400000);
+    const dday = diffDays === 0 ? '🔴 오늘 비행' : diffDays === 1 ? '🟡 내일 비행' : '⏳ D-' + diffDays;
+    $('nextWrap').innerHTML = '<div class="hero card" onclick="showDetail(\'' + nextFlight.id + '\')"><div class="dday">' + dday + '</div><div class="route">' +
+      '<div class="port"><div>' + flag(nextFlight.dep) + ' ' + nextFlight.dep + '</div><div class="time">' + nextFlight.depTime + '</div><div class="meta">UTC ' + c.depUTC + (c.depLocal ? '<br>현지 ' + c.depLocal.time : '') + '</div></div>' +
+      '<div class="mid"><div class="small">' + c.dur.h + 'h' + (c.dur.m ? ' ' + c.dur.m + 'm' : '') + '</div><div class="line"><span>✈</span></div><div class="small">' + nextFlight.flightNo + '</div></div>' +
+      '<div class="port"><div>' + flag(nextFlight.arr) + ' ' + nextFlight.arr + '</div><div class="time">' + nextFlight.arrTime + (nextFlight.arrPlus ? ' <span style="font-size:11px;color:var(--green)">+' + nextFlight.arrPlus + '일</span>' : '') + '</div><div class="meta">UTC ' + c.arrUTC + (c.arrLocal ? '<br>현지 ' + c.arrLocal.time : '') + '</div></div>' +
+      '</div></div>';
+  } else {
+    $('nextWrap').innerHTML = '<div class="sec"><div class="card empty">다음 비행이 없어요. PDF를 불러와보세요.</div></div>';
+  }
+  const flights = list.filter(f => f.type === 'flight');
+  const totalMin = flights.reduce((sum,f) => sum + computedItem(f).dur.total, 0);
+  const offCnt = list.filter(f => f.type === 'off').length;
+  const reserveCnt = list.filter(f => f.type === 'reserve').length;
+  $('statsRow').innerHTML = statBox(Math.floor(totalMin/60) + 'h', '총 비행시간') + statBox(list.length + '개', '전체 항목') + statBox((offCnt + reserveCnt) + '개', 'OFF/RESERVE');
+  $('upcomingList').innerHTML = upcoming.length ? upcoming.map(itemCard).join('') : '<div class="card empty">아직 불러온 스케줄이 없어요.</div>';
+}
+function itemCard(f){
+  if(f.type === 'flight'){
+    const c = computedItem(f);
+    return '<div class="card item" onclick="showDetail(\'' + f.id + '\')"><div class="ico ' + lineClass(f.type) + '">' + lineIcon(f.type) + '</div><div class="body"><div class="r1">' + flag(f.dep) + ' ' + f.dep + ' → ' + flag(f.arr) + ' ' + f.arr + '</div><div class="r2">📅 ' + shortDate(f.date) + ' · ' + f.flightNo + ' · ' + f.depTime + '~' + f.arrTime + (f.arrPlus ? ' (+' + f.arrPlus + '일)' : '') + '</div></div><div class="right"><div class="v">' + c.dur.h + 'h' + (c.dur.m ? ' ' + c.dur.m + 'm' : '') + '</div>' + badgeHtml(f) + '</div></div>';
+  }
+  return '<div class="card item" onclick="showDetail(\'' + f.id + '\')"><div class="ico ' + lineClass(f.type) + '">' + lineIcon(f.type) + '</div><div class="body"><div class="r1">' + f.code + '</div><div class="r2">📅 ' + shortDate(f.date) + ' · ' + (f.startTime || '--:--') + ' ~ ' + (f.endTime || '--:--') + '</div></div><div class="right">' + badgeHtml(f) + '</div></div>';
+}
+function renderStats(){
+  const list = state.flights.slice().sort((a,b) => (a.date + (a.depTime || a.startTime || '00:00')).localeCompare(b.date + (b.depTime || b.startTime || '00:00')));
+  const flights = list.filter(f => f.type === 'flight');
+  const totalMin = flights.reduce((sum,f) => sum + computedItem(f).dur.total, 0);
+  const offCnt = list.filter(f => f.type === 'off').length;
+  const reserveCnt = list.filter(f => f.type === 'reserve').length;
+  const trainCnt = list.filter(f => f.type === 'train').length;
+  $('bigStats').innerHTML = bigBox('총 비행시간', Math.floor(totalMin/60) + 'h ' + (totalMin%60) + 'm') + bigBox('비행 편수', flights.length + '편') + bigBox('OFF/ATDO', offCnt + '개') + bigBox('RESERVE/교육', (reserveCnt + trainCnt) + '개');
+  $('allList').innerHTML = list.length ? list.map(itemCard).join('') : '<div class="card empty">저장된 스케줄이 없어요.</div>';
+}
+window.addEventListener('error', function(e){ setStatus('err', '오류: ' + e.message); });
+window.addEventListener('unhandledrejection', function(e){ setStatus('err', '실패: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason))); });
+renderHome();
+</script>
+</body>
+</html>
