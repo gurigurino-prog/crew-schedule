@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crew Schedule Export</title>
+<style>
+body{font-family:-apple-system;background:#0b1220;color:white;padding:20px}
+button{padding:15px;border-radius:12px;border:none;background:#3b82f6;color:white;font-size:16px;width:100%}
+</style>
+</head>
+<body>
+<h2>📅 캘린더로 전체 일정 내보내기</h2>
+<button onclick="exportICS()">📅 일정 내보내기</button>
+
+<script>
+function download(filename, text) {
+ var element = document.createElement('a');
+ element.setAttribute('href', 'data:text/calendar;charset=utf-8,' + encodeURIComponent(text));
+ element.setAttribute('download', filename);
+ element.style.display = 'none';
+ document.body.appendChild(element);
+ element.click();
+ document.body.removeChild(element);
+}
+
+function exportICS(){
+ let events = JSON.parse(localStorage.getItem("crew_schedule_auto_v2")||"[]");
+ if(!events.length){alert("일정 없음");return;}
+
+ let ics = "BEGIN:VCALENDAR\nVERSION:2.0\n";
+
+ events.forEach(e=>{
+   let title = "";
+   let start = e.date.replaceAll("-","") + "T000000";
+   let end = e.date.replaceAll("-","") + "T235900";
+
+   if(e.type==="flight"){
+     title = "✈ " + e.flightNo + " " + e.dep + "→" + e.arr;
+     start = e.date.replaceAll("-","") + "T" + e.depTime.replace(":","") + "00";
+     end = e.date.replaceAll("-","") + "T" + e.arrTime.replace(":","") + "00";
+   }else{
+     title = "📌 " + e.code;
+   }
+
+   ics += "BEGIN:VEVENT\n";
+   ics += "SUMMARY:" + title + "\n";
+   ics += "DTSTART:" + start + "\n";
+   ics += "DTEND:" + end + "\n";
+   ics += "END:VEVENT\n";
+ });
+
+ ics += "END:VCALENDAR";
+
+ download("crew_schedule.ics",ics);
+}
+</script>
+</body>
+</html>
